@@ -4,13 +4,14 @@ class Parser :
         self.parse_success = False 
         self.rules = []
     
-    #Connect to the interface
     def parse(self, xml):
         pass
     
     def get_rules(self):
-        return self.rules
+        pass
 
-    #Display the informations
+    def get_success(self):
+        return self.parse_success
+
     def __str__(self):
         pass

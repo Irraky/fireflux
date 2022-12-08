@@ -1,10 +1,7 @@
 import requests
 from lxml import html
-from lxml import etree
 
-#local
-from connector import Connector
-from credential import Credential    
+from connector import Connector  
 
 
 class Connector_PfSense(Connector):
@@ -43,7 +40,6 @@ class Connector_PfSense(Connector):
         if html.fromstring(r.text).xpath('//title/text()')[0].startswith("Login"):
             exit("Login was not Successful!")
 
-        # download configuration
         self.login_success = True
 
     def retrieve(self):
@@ -60,20 +56,11 @@ class Connector_PfSense(Connector):
         # safe or output the Configuration
         return r.text
 
+    def get_login_success(self):
+        return self.login_success
+
+    def get_credential(self):
+        return self.credential
+
     def __str__(self):
         return f"HOST : {self.credential.host} ; SSL : {self.credential.ssl} ; Username : {self.credential.username} ; Password : {self.credential.password}"
-
-cred = Credential("pfsense", "192.168.140.250", False, "admin", "pfsense")
-pfsense = Connector_PfSense(cred)
-print(pfsense)
-pfsense.connect()
-print(pfsense.retrieve())
-
-"""
-EXAMPLE
-cred = Credential("pfsense", "192.168.140.250", False, "admin", "pfsense")
-pfsense = Connector_PfSense(cred)
-print(pfsense)
-pfsense.connect()
-print(pfsense.retrieve())
-"""

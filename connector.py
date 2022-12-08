@@ -13,7 +13,10 @@ class Connector :
         pass
 
     def get_login_success(self):
-        return login_success
+        pass
+
+    def get_credential(self):
+        pass
 
     #Display the informations
     def __str__(self):
