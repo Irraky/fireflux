@@ -24,6 +24,6 @@ parser = Parser_PfSense()
 parser.parse(backup)
 
 #print(parser.get_success())
-#print(parser.get_rules()[0])
+print(parser.get_rules()[0])
 
 #BUILD THE MATRIX
