@@ -43,4 +43,4 @@ class Rule :
 
     #Display the informations
     def __str__(self):
-        return f"SRC : {self.src} ; DST : {self.dst} ; PROTOCOL : {self.protocol} ; PORT_SRC : {self.port_src} ({self.service_src}); PORT_DST : {self.port_dst} ({self.service_dst})"
+        return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:{self.port_dst}"
