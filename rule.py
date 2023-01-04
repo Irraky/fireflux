@@ -1,24 +1,25 @@
 import json
 
-class Rule :  
 
-    def __init__(self,src,dst,protocol,port_src, port_dst):
-        self.parse_success = False 
+class Rule:
+
+    def __init__(self, src, dst, protocol, port_src, port_dst):
+        self.parse_success = False
         self.src = src
         self.dst = dst
         self.protocol = protocol
-        
-        with open('ports.json', 'r') as f:
+
+        with open('resources/ports.json', 'r') as f:
             self.ports = json.load(f)
-        
+
         self.port_src = port_src
-        self.service_src = self.find_service(port_src,protocol)
+        self.service_src = self.find_service(port_src, protocol)
         self.port_dst = port_dst
-        self.service_dst = self.find_service(port_dst,protocol)
-    
+        self.service_dst = self.find_service(port_dst, protocol)
+
     def get_protocol(self):
         return self.protocol
-    
+
     def get_src(self):
         return self.src
 
@@ -39,8 +40,17 @@ class Rule :
         except:
             return None
 
-
-
-    #Display the informations
     def __str__(self):
-        return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:{self.port_dst}"
+        """
+        Display the information
+        :return:
+        """
+        return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:" \
+               f"{self.port_dst}"
+
+    def to_string(self):
+        return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:" \
+               f"{self.port_dst}"
+
+    def get_csv_rule(self):
+        return f"{self.src};{self.dst};{self.protocol};{self.port_src};{self.port_dst}"

@@ -1,15 +1,19 @@
-class Connector :  
+class Connector:
 
     def __init__(self, credential):
         self.credential = credential
-        self.login_success = False 
-    
-    #Connect to the interface
+        self.login_success = False
+
     def login(self):
+        """
+        Connect to the interface
+        """
         pass
-    
-    #Retrive the firewall information
+
     def retrieve(self):
+        """
+        Retrieve the firewall information
+        """
         pass
 
     def get_login_success(self):
@@ -18,6 +22,8 @@ class Connector :
     def get_credential(self):
         pass
 
-    #Display the informations
     def __str__(self):
+        """
+        Display the information
+        """
         pass
