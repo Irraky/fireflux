@@ -17,12 +17,12 @@ class PfsenseParser(Parser):
                 try:
                     port_src = rule.find('source').find('port').text
                 except:
-                    port_src = None
+                    port_src = "*"
 
                 try:
                     port_dst = rule.find('destination').find('port').text
                 except:
-                    port_dst = None
+                    port_dst = "*"
                 self.rules.append(Rule(src, dst, protocol, port_src, port_dst))
 
             except:

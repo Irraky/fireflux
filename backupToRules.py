@@ -3,17 +3,6 @@ import pandas as pd
 import openpyxl
 import xlsxwriter
 
-
-def convert(file):
-    with open(file, "r") as f:
-        backup = f.read()
-
-    parser = PfsenseParser()
-    parser.parse(backup)
-
-    return parser.get_rules_list_as_csv()
-
-
 if __name__ == '__main__':
     with open("./resources/test.xml", "r") as f:
         backup = f.read()
@@ -23,7 +12,6 @@ if __name__ == '__main__':
     parser.write_csv("rules.csv")
 
     data_frame = pd.read_csv("./resources/rules.csv", delimiter=";")
-    print(data_frame)
 
     writer = pd.ExcelWriter("./resources/output.xlsx")
     data_frame.to_excel(writer, sheet_name="Flow matrix", header=True, index=False, na_rep="NaN")

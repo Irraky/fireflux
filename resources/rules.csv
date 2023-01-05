@@ -1,5 +1,5 @@
 SRC;DST;PROTOCOL;SRC PORT;DST PORT
-lan;lan;tcp;None;21
-lan;lan;tcp;None;22
-lan;lan;tcp;None;53
-opt1;lan;tcp;None;3389
+lan;lan;tcp;*;21
+lan;lan;tcp;*;22
+lan;lan;tcp;*;53
+opt1;lan;tcp;*;3389
