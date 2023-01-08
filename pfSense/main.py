@@ -1,6 +1,6 @@
 import pfsense
 
-url = "http://192.168.1.1/"
+url = "http://172.16.143.2/"
 username = "admin"
 password = "pfsense"
 
