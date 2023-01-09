@@ -436,11 +436,11 @@
       "description": "XNS Time Protocol"
     },
     "53/tcp": {
-      "name": "domain",
+      "name": "dns",
       "description": "Domain Name Server"
     },
     "53/udp": {
-      "name": "domain",
+      "name": "dns",
       "description": "Domain Name Server"
     },
     "54/tcp": {

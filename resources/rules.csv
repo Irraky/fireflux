@@ -3,3 +3,9 @@ lan;lan;tcp;*;21
 lan;lan;tcp;*;22
 lan;lan;tcp;*;53
 opt1;lan;tcp;*;3389
+opt1;lan;tcp;*;25
+wan;lan;tcp;*;1194
+wan;lanip;tcp;*;443
+lan;wan;tcp;*;53
+opt1;lanip;tcp;*;110
+opt1;lan;tcp;*;23

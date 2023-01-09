@@ -26,6 +26,21 @@ class Parser(ABC):
             for r in self.get_rules_list_as_csv():
                 f.write(r + "\n")
 
+    def get_dict(self):
+        rules_dict = {}
+        for r in self.rules:
+            current_rule = r.get_array()
+            direction = r.get_direction()
+            protocol = r.get_protocol()
+            if direction in rules_dict:
+                if protocol in rules_dict[direction]:
+                    rules_dict[direction][protocol].append(current_rule[3:])
+                else:
+                    rules_dict[direction] = {protocol: [current_rule[3:]]}
+            else:
+                rules_dict[direction] = {protocol: [current_rule[3:]]}
+        return rules_dict
+
     def get_rules_list_as_csv(self):
         return [r.get_csv_rule() for r in self.rules]
 

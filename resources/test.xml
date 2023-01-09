@@ -293,6 +293,204 @@
 				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
 			</created>
 		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280115</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>opt1</network>
+			</source>
+			<destination>
+				<network>lan</network>
+				<port>25</port>
+			</destination>
+			<descr></descr>
+			<created>
+				<time>1673280115</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+			<updated>
+				<time>1673280179</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280170</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>wan</network>
+			</source>
+			<destination>
+				<network>lan</network>
+				<port>1194</port>
+			</destination>
+			<descr></descr>
+			<updated>
+				<time>1673280170</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+			<created>
+				<time>1673280170</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280194</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>wan</network>
+			</source>
+			<destination>
+				<network>lan</network>
+				<port>443</port>
+			</destination>
+			<descr></descr>
+			<created>
+				<time>1673280194</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+			<updated>
+				<time>1673282325</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280210</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>lan</network>
+			</source>
+			<destination>
+				<network>wan</network>
+				<port>53</port>
+			</destination>
+			<descr></descr>
+			<updated>
+				<time>1673280210</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+			<created>
+				<time>1673280210</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280229</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>opt1</network>
+			</source>
+			<destination>
+				<network>lan</network>
+				<port>110</port>
+			</destination>
+			<descr></descr>
+			<created>
+				<time>1673280229</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+			<updated>
+				<time>1673282331</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+		</rule>
+		<rule>
+			<id></id>
+			<tracker>1673280244</tracker>
+			<type>pass</type>
+			<interface>lan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<network>opt1</network>
+			</source>
+			<destination>
+				<network>lan</network>
+				<port>23</port>
+			</destination>
+			<descr></descr>
+			<updated>
+				<time>1673280244</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</updated>
+			<created>
+				<time>1673280244</time>
+				<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
+			</created>
+		</rule>
 	</filter>
 	<shaper>
 	</shaper>
@@ -428,7 +626,7 @@
 		<prv>LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRRFcxZzFqdFVrSXo0dWIKNjllaG93M3VBbHlqNEg1ZXluTUtTOU85eXREUGV0c3gzUjlOMVlLTWtnVWpUWGR2UGhqN2NQRlhUN2xrdXNCYwo0R3dIeEc3OTIwbHBkWFNESVhLU0VicmUvRzRZM29SZ0NKZFFXQ0htMjFHYksvMTE0dnFFZVBGYVU1d2ZTUXk3ClN5UE9RUVE2RGJKRFZXOHJnc3VTOW5wR3k0dTJIUXpYcis0Z0tpODQ3elFLVUJHcXU4dVJrb2RHN0dRblY4UjkKOU5XdnRWM3luN3R4OGRQcEk5eVI1RjBybUYxeG5VWEhQMkVHbmIvSkMxdWU1NTBPYXl6ZHNHaWx5bVUxYWNWegpJZld5QnlFTXB4bGdnQXh6MkdkOEMwSUI3THJLa0MzeEJXVVV2dS9JdjNTRUUydHQ5MXN4OXk2Y01PRDJrSVV1ClcvcjB6SEZ4QWdNQkFBRUNnZ0VCQUlOYzVWa0hlMzM0c2l3SC9KVG9SOWMxK0lGMy9xMWxhd3hycXpCTStIczEKYXh4RlVpUGNudlBuUVY4QnVqcjZKSHB5NkE5MFB5OVpoZEFFcGVubDhkd2xudkR1RWUwd29ZYXhjcXR3ZkwyVwpLaWt5ZDV0NEdGcTUxbDlrZVpvQXpSLzlkODY4ZXlVaUhMZlZUVEtMek5MV2x4N1crYUFJWFFRaTFFZS9wRkVZCnVXaFZFbmN0M2NPeWRyZlJNc2YxMkNwNnYzQU8vS3lZQzdBL2JvcXVRZkc3SWdwdkVYd1E3K2p5SEVEcThDaDEKS1d0Yldab2VUWlNucWFsajlDaEZZRThIbE9xczFPZmJLSFVKUXIzRGUyTUpwbDlPM0hJVkM2NkowMkZOdUNiZwpFVnIvNTR2dnhSeFJaQmpmK091SEkyYVNBZ0U1amxDZFVHRlI4VzhNbEFVQ2dZRUE3OGFDa0ptMGNwWWluazBJCkliNUcvcnQxVzlnTE9CbC95dmpnYUVRaVNucVczNVZjQitFMDE5RW14YmM2UUJ3S0lUc3VlSHIzQ29IMDg4ZjQKa255VFIvMzg5bzZPSVBoQWpwOXUwS2x1ak9XcDhhTmxCOHBuZTJWdHJmQSthZTRhRjJRcmNmYTM5dWlOeUhzRQpZNWRjcmpteWJMT3RHUWU5blNJbVhVeFV1SDhDZ1lFQTVWK0lsZk9zUVZ6bklkakFYQ2tLRG5sNkp3b0h6M3U1Cms4QnUzL21vcld2dG50TG1WRFhjOXh1dlZPR29mTGRRZVkyd3Jsbmkra2RIRWVxQ2xUb3FsTDRGdHc3Q2UxMnIKdlI4VmdlTlJrS0VHYjFPamtHN0pYc3pRYmh2VTFBa2JwWmoyUmFmYWlud1NuenpqQ3JRV2JscG5WeHRDbW9ycgpRSi9YaVV4cFhnOENnWUFvR3hvbnVhMzNKS214dE16UmFCUlQ4Mk1UODdVY3N4Y3ZDaVh2Q3NaNWtydTl0aXZvCm5ZRExRSTZ0cjVJc3V3UHV2d2xzMlpTTXkyUC9pc2xISjFNelRZYU1ieGZTNS9OVVo5S1BVR2ZQWlhMaG1pVUMKQXBjQWl0eW5wWEdySWtwMjh5aFpMWjFqelU0NTVHbTloc25YMG9ySHA5NGlPNnM1cDBhbmdHY0RYUUtCZ0JQWQpMaEw3SC80UHNaZUdEeTVxQm9xMkM5RncxcmdtdGltSVRvOW1KQ2ZNM0tRUER3cGVGcDN5Y1RyZ3d4ajNLeWs1CkR2NG1uTEtXbEJtQ3RvVitvTXg1bkRqNE4rOUFiV2xSVlNVRnE3cmRrNWJ5SDRhUmJ5NmFmYlhwQm9MSnZ2Q1cKeVVmQmUvRGJSeWtydFdEcHI3OGdaeXhzR1ZrUmg4VHhqMDQ3cENvVkFvR0JBS0JrSGY1OXp2OUkwLzZFak5CUQpqL085RFJRT0VLQlJ3RUR5NEkrajQ0M2RjN1Q5NU9LTmlGVVZLQlVGNFV3dkw1Vi95RzRQaVJ4TGtvUXNaSW84CmZvSWszL3M3Nit6MjdQY1A3bHdMOGYzSGlaclpwRzN0U3dQbEx3dW05K3AwenZWY3dtV3RoVWV6eFRRRVhxOU8KNHZjUnNLY1FzeEpPVTZtVVRBclRCVElZCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K</prv>
 	</cert>
 	<revision>
-		<time>1672823882</time>
+		<time>1673282331</time>
 		<description><![CDATA[admin@192.168.1.2 (Local Database): Firewall: Rules - saved/edited a firewall rule.]]></description>
 		<username><![CDATA[admin@192.168.1.2 (Local Database)]]></username>
 	</revision>

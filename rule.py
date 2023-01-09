@@ -44,9 +44,12 @@ class Rule:
         """
         Display the information
         :return:
-        """
+
         return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:" \
                f"{self.port_dst}"
+        """
+
+        return f"{self.src};{self.dst};{self.protocol};{self.port_src};{self.port_dst}"
 
     def to_string(self):
         return f"SRC:{self.src};DST:{self.dst};PROTOCOL:{self.protocol};PORT_SRC:{self.port_src};PORT_DST:" \
@@ -54,3 +57,9 @@ class Rule:
 
     def get_csv_rule(self):
         return f"{self.src};{self.dst};{self.protocol};{self.port_src};{self.port_dst}"
+
+    def get_array(self):
+        return [self.src, self.dst, self.protocol, self.port_src, self.port_dst, self.service_dst]
+
+    def get_direction(self):
+        return self.src, self.dst
