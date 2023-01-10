@@ -1,6 +1,7 @@
 import requests
 from lxml import html
 import xmltodict
+import ipaddress
 from common import IpVer, Rule, Action, Protocol, NetworkFilter, PortRange
 
 
@@ -33,8 +34,10 @@ def __login(s, url, username, password):
     return token
 
 def __parse_src_dst(dict): 
-    network = NetworkFilter(inverted="not" in dict, address=dict.get("address"))
-    port = PortRange(range=dict.get("port"))
+    addr = dict.get("address")
+    network = ipaddress.ip_network('192.0.2.0/24') if addr != None else None
+    network = NetworkFilter(inverted="not" in dict, network=network)
+    port = PortRange.from_str(dict.get("port", "*"))
     return (network, port)
 
 def __parser(input):

@@ -2,8 +2,9 @@ from enum import Enum
 from pydantic import BaseModel
 import json
 import csv
+import ipaddress
 from io import TextIOWrapper
-from typing import Iterable
+from typing import Iterable, Tuple
 
 
 # --- https://docs.opnsense.org/manual/firewall.html#the-basics
@@ -27,6 +28,7 @@ class IpVer(str, Enum):
 
 class Protocol(str, Enum):
     """Network protocols"""
+
     TCP = "TCP"
     UDP = "UDP"
     TPC_UDP = "TCP/UDP"
@@ -47,38 +49,54 @@ class Protocol(str, Enum):
 
 
 class NetworkFilter(BaseModel):
-    """Ip range filter"""
+    """Network filter"""
 
-    # TODO improve
     inverted: bool
-    address: str | None
+    network: ipaddress.IPv4Network | ipaddress.IPv6Network | None
 
     def to_str(self) -> str:
         inverted = "!" if self.inverted else ""
-        address = self.address if self.address != None else "*"
+        address = self.network if self.network != None else "*"
         return f"{inverted}{address}"
 
     @staticmethod
     def from_str(value):
         inverted = False
-        if value.startswith('!'):
+        if value.startswith("!"):
             inverted = True
             value = value[1:]
-        value if value != "*" else None
-        return NetworkFilter(inverted=inverted, address=value)
+        if value == "*":
+            network = None
+        else:
+            network = ipaddress.ip_network(value)
+        return NetworkFilter(inverted=inverted, network=network)
 
 
 class PortRange(BaseModel):
     """Port range filter"""
 
-    range: str | None
+    range: int | Tuple[int, int] | None
 
     def to_str(self) -> str:
-        return self.range if self.range != None else "*"
+        if self.range == None:
+            return "*"
+        elif type(self.range) is tuple:
+            return f"{self.range[0]}-{self.range[1]}"
+        else:
+            return f"{self.range}"
 
     @staticmethod
     def from_str(value):
-        return PortRange(range=value if value != "*" else None)
+        if value == "*":
+            range = None
+        else:
+            range = list(map(lambda nb: int(nb), value.split("-", 1)))
+            if len(range) == 1:
+                range = range[0]
+            else:
+                range = (range[0], range[1])
+
+        return PortRange(range=range)
 
 
 class Rule(BaseModel):
@@ -94,15 +112,17 @@ class Rule(BaseModel):
     destination: NetworkFilter
     destination_port: PortRange
 
+
 # --- Rules serialization
 
 
 def __ugly_hack(dict):
-    dict.source = dict.source.to_str();
-    dict.destination = dict.destination.to_str();
-    dict.source_ports = dict.source_ports.to_str();
-    dict.destination_port = dict.destination_port.to_str();
+    dict.source = dict.source.to_str()
+    dict.destination = dict.destination.to_str()
+    dict.source_ports = dict.source_ports.to_str()
+    dict.destination_port = dict.destination_port.to_str()
     return dict.dict()
+
 
 def __ugly_hack2(dict):
     dict["source"] = NetworkFilter.from_str(dict["source"])
@@ -112,6 +132,7 @@ def __ugly_hack2(dict):
     if dict["protocol"] == "":
         dict["protocol"] = None
     return dict
+
 
 def rules_to_json(dst: TextIOWrapper, rules: Iterable[Rule]):
     """Serialize rules into a JSON stream"""
@@ -134,4 +155,6 @@ def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
 
 def rules_from_csv(src: TextIOWrapper) -> list[Rule]:
     """Deserialize rules from a CSV stream"""
-    return list(map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), csv.DictReader(src)))
+    return list(
+        map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), csv.DictReader(src))
+    )
