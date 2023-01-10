@@ -38,10 +38,10 @@ def pull(src: str) -> List[common.Rule]:
     else:
         if src.endswith(".json"):
             with open(src, "r") as f:
-                return common.rules_from_json(f.read())
+                return common.rules_from_json(f)
         elif src.endswith(".csv"):
             with open(src, "r") as f:
-                return common.rules_from_csv(f.read())
+                return common.rules_from_csv(f)
         else:
             sys.exit(f"Unsupported file format ${src}")
 
@@ -51,10 +51,10 @@ def push(dst: str, rules: List[common.Rule]):
     # TODO handle http endpoints
     if dst.endswith(".json"):
         with open(dst, "w") as f:
-            f.write(common.rules_to_json(rules))
+            common.rules_to_json(f, rules)
     elif dst.endswith(".csv"):
         with open(dst, "w") as f:
-            f.write(common.rules_to_csv(rules))
+            common.rules_to_csv(f, rules)
     else:
         sys.exit(f"Unsupported file format ${dst}")
 

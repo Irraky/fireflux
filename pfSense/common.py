@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import json
 import csv
 import string
-from io import StringIO
+from io import StringIO, TextIOWrapper
 from typing import Iterable
 
 
@@ -61,30 +61,27 @@ class Rule(BaseModel):
 
 # --- Rules serialization
 
-def rules_to_json(rules: Iterable[Rule]) -> str:
-    """Serialize rules into json string"""
-    return json.dumps(list(map(lambda r: r.dict(), rules)))
+def rules_to_json(dst: TextIOWrapper, rules: Iterable[Rule]):
+    """Serialize rules into a JSON stream"""
+    json.dump(list(map(lambda r: r.dict(), rules)), dst)
 
 
-def rules_from_json(input: str) -> list[Rule]:
-    """Deserialize rules into json string"""
-    return list(map(lambda dict: Rule.parse_obj(dict), json.loads(input)))
+def rules_from_json(src: TextIOWrapper) -> list[Rule]:
+    """Deserialize rules from a JSON stream"""
+    return list(map(lambda dict: Rule.parse_obj(dict), json.load(src)))
 
 
-def rules_to_csv(rules: Iterable[Rule]) -> str:
-    """Serialize rules into csv string"""
+def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
+    """Serialize rules into a CSV stream"""
     fieldnames = list(Rule.schema()["properties"].keys())
-    buff = StringIO()
-    w = csv.DictWriter(buff, fieldnames=fieldnames)
+    w = csv.DictWriter(dst, fieldnames=fieldnames)
     w.writeheader()
     for rule in rules:
         w.writerow(rule.dict())
-    return buff.getvalue()
 
-
-def rules_from_csv(input: str) -> list[Rule]:
-    """Deserialize rules into csv string"""
-    return list(map(lambda dict: Rule.parse_obj(dict), csv.DictReader(StringIO(input))))
+def rules_from_csv(src: TextIOWrapper) -> list[Rule]:
+    """Deserialize rules from a CSV stream"""
+    return list(map(lambda dict: Rule.parse_obj(dict), csv.DictReader(src)))
 
 
 # --- Random data generation
@@ -104,9 +101,12 @@ def rng_enum(it):
 
 
 rules = list(Rule.random() for _ in range(120))
-rules_as_json = rules_to_json(rules)
-json_as_rules = rules_from_json(rules_as_json)
-rules_as_csv = rules_to_csv(json_as_rules)
-csv_as_rules = rules_from_csv(rules_as_csv)
-
+buff = StringIO()
+rules_to_json(buff, rules)
+buff = StringIO(buff.getvalue())
+json_as_rules = rules_from_json(buff)
+buff = StringIO()
+rules_to_csv(buff, json_as_rules)
+buff = StringIO(buff.getvalue())
+csv_as_rules = rules_from_csv(buff)
 assert (csv_as_rules == rules)
