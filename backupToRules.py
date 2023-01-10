@@ -4,7 +4,8 @@ import openpyxl
 import xlsxwriter
 import pprint
 import numpy as np
-
+import json
+from tabulate import tabulate
 
 if __name__ == '__main__':
     with open("./resources/test.xml", "r") as f:
@@ -48,8 +49,7 @@ if __name__ == '__main__':
     print(flow_matrix)
 
     data_frame = pd.DataFrame(flow_matrix)
-
-    print(data_frame)
+    print(tabulate(data_frame, headers = 'keys', tablefmt = 'simple_grid'))
 
     writer = pd.ExcelWriter("./resources/output.xlsx")
     data_frame.to_excel(writer, sheet_name="Flow matrix", header=False, index=False, na_rep="")
@@ -62,3 +62,6 @@ if __name__ == '__main__':
     #     writer.sheets["Flow matrix"].set_column(col_idx, col_idx, column_length)
 
     writer.close()
+
+    df = pd.DataFrame(rules_dict)
+    df.to_json("./resources/output.json", orient = 'records', indent = 4)
