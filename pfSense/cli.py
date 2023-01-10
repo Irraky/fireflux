@@ -1,24 +1,10 @@
+import sys
+from typing import Iterable, List
 import click
 import pfsense
 import common
 
 from urllib.parse import urlparse
-
-class HttpEndpoint:
-    url: str
-    username: str
-    password: str
-
-    def __init__(self, str):
-        url = urlparse(str)
-        [urserinfo, host] = url.netloc.split("@", 1)
-        [username, password] = urserinfo.split(":", 1)
-        self.username = username
-        self.password = password
-        self.url = f"{url.scheme}://{host}/"
-
-    def __str__(self):
-        return f"HttpEndpoint: {self.url} {self.username} {self.password}"
 
 
 @click.command()
@@ -26,18 +12,57 @@ class HttpEndpoint:
 @click.argument("dst", required=False)
 def cli(src, dst):
     """Cross platform firewall rules tool"""
-    src = HttpEndpoint(src)
-    rules = pfsense.extract(src.url, src.username, src.password)
-
+    rules = pull(src)
     if dst is None:
-        # TODO visualization
-        print(rules)
-    elif dst.endswith(".json"):
+        visualize(rules)
+    else:
+        push(dst, rules)
+
+
+def parseHttpEndpoint(str: str) -> tuple[str, str, str] | None:
+    """Extract username, password and host from an http endpoint, return None if not an url"""
+    url = urlparse(str)
+    if not url.netloc:
+        return None
+    [urserinfo, host] = url.netloc.split("@", 1)
+    [username, password] = urserinfo.split(":", 1)
+    return (f"{url.scheme}://{host}/", username, password)
+
+
+def pull(src: str) -> List[common.Rule]:
+    """Pull rules from file or http endpoints"""
+    httpEndpoint = parseHttpEndpoint(src)
+    if httpEndpoint != None:
+        [url, username, password] = httpEndpoint
+        return pfsense.extract(url, username, password)
+    else:
+        if src.endswith(".json"):
+            with open(src, "r") as f:
+                return common.rules_from_json(f.read())
+        elif src.endswith(".csv"):
+            with open(src, "r") as f:
+                return common.rules_from_csv(f.read())
+        else:
+            sys.exit(f"Unsupported file format ${src}")
+
+
+def push(dst: str, rules: List[common.Rule]):
+    """Push rules to file or http endpoints"""
+    # TODO handle http endpoints
+    if dst.endswith(".json"):
         with open(dst, "w") as f:
             f.write(common.rules_to_json(rules))
-    else:
+    elif dst.endswith(".csv"):
         with open(dst, "w") as f:
             f.write(common.rules_to_csv(rules))
+    else:
+        sys.exit(f"Unsupported file format ${dst}")
+
+
+def visualize(rules: Iterable[common.Rule]):
+    """Visualize firewall rules using a flow matrix"""
+    # TODO visualization
+    print(rules)
 
 
 if __name__ == "__main__":
