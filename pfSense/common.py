@@ -29,7 +29,21 @@ class Protocol(str, Enum):
     """Network protocols"""
     TCP = "TCP"
     UDP = "UDP"
-    Both = "TCP/UDP"
+    TPC_UDP = "TCP/UDP"
+    # I added all protocols supported by pfSense bu I am unsure if we can/want to support all of them
+    ICMP = "ICMP"
+    ESP = "ESP"
+    AH = "AH"
+    GRE = "GRE"
+    EoIP = "EoIP"
+    IPV6 = "IPV6"
+    IGMP = "IGMP"
+    PIM = "PIM"
+    OSPF = "OSPF"
+    SCTP = "SCTP"
+    CARP = "CARP"
+    PFSYNC = "PFSYNC"
+    ETHERIP = "ETHERIP"
 
 
 class Rule(BaseModel):
@@ -37,8 +51,8 @@ class Rule(BaseModel):
     description: str | None
     action: Action
     interface: str                          # TODO interface type
-    ip_ver: IpVer = IpVer.Both
-    protocol: Protocol = Protocol.Both
+    ip_ver: IpVer
+    protocol: Protocol | None
     source: str                             # TODO ip range type
     source_ports: str                       # TODO port range type
     destination: str                        # TODO ip range type
