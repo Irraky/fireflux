@@ -1,10 +1,8 @@
 from enum import Enum
-import random
 from pydantic import BaseModel
 import json
 import csv
-import string
-from io import StringIO, TextIOWrapper
+from io import TextIOWrapper
 from typing import Iterable
 
 
@@ -13,6 +11,7 @@ from typing import Iterable
 
 class Action(str, Enum):
     """Firewall actions"""
+
     Pass = "pass"
     Block = "block"
     Reject = "reject"
@@ -20,6 +19,7 @@ class Action(str, Enum):
 
 class IpVer(str, Enum):
     """Internet Protocol verions"""
+
     V4 = "IPv4"
     V6 = "IPv6"
     Both = "IPv4+IPv6"
@@ -46,43 +46,81 @@ class Protocol(str, Enum):
     ETHERIP = "ETHERIP"
 
 
-class Rule(BaseModel):
-    """Generic firewall rule"""
-    description: str | None
-    action: Action
-    interface: str                          # TODO interface type
-    ip_ver: IpVer
-    protocol: Protocol | None
-    source: str                             # TODO ip range type
-    source_ports: str                       # TODO port range type
-    destination: str                        # TODO ip range type
-    destination_port: str                   # TODO port range type
+class NetworkFilter(BaseModel):
+    """Ip range filter"""
+
+    # TODO improve
+    inverted: bool
+    address: str | None
+
+    def to_str(self) -> str:
+        inverted = "!" if self.inverted else ""
+        address = self.address if self.address != None else "*"
+        return f"{inverted}{address}"
 
     @staticmethod
-    def random():
-        return Rule(
-            description=rng_str(23),
-            action=rng_enum(Action),
-            interface=rng_str(8),
-            ip_ver=rng_enum(IpVer),
-            protocol=rng_enum(Protocol),
-            source=rng_str(12),
-            source_ports=rng_str(12),
-            destination=rng_str(12),
-            destination_port=rng_str(12),
-        )
+    def from_str(value):
+        inverted = False
+        if value.startswith('!'):
+            inverted = True
+            value = value[1:]
+        value if value != "*" else None
+        return NetworkFilter(inverted=inverted, address=value)
 
+
+class PortRange(BaseModel):
+    """Port range filter"""
+
+    range: str | None
+
+    def to_str(self) -> str:
+        return self.range if self.range != None else "*"
+
+    @staticmethod
+    def from_str(value):
+        return PortRange(range=value if value != "*" else None)
+
+
+class Rule(BaseModel):
+    """Generic firewall rule"""
+
+    description: str | None
+    action: Action
+    interface: str  # TODO interface type
+    ip_ver: IpVer
+    protocol: Protocol | None
+    source: NetworkFilter
+    source_ports: PortRange
+    destination: NetworkFilter
+    destination_port: PortRange
 
 # --- Rules serialization
 
+
+def __ugly_hack(dict):
+    dict.source = dict.source.to_str();
+    dict.destination = dict.destination.to_str();
+    dict.source_ports = dict.source_ports.to_str();
+    dict.destination_port = dict.destination_port.to_str();
+    return dict.dict()
+
+def __ugly_hack2(dict):
+    dict["source"] = NetworkFilter.from_str(dict["source"])
+    dict["destination"] = NetworkFilter.from_str(dict["destination"])
+    dict["source_ports"] = PortRange.from_str(dict["source_ports"])
+    dict["destination_port"] = PortRange.from_str(dict["destination_port"])
+    if dict["protocol"] == "":
+        dict["protocol"] = None
+    return dict
+
 def rules_to_json(dst: TextIOWrapper, rules: Iterable[Rule]):
     """Serialize rules into a JSON stream"""
-    json.dump(list(map(lambda r: r.dict(), rules)), dst)
+    json.dump(list(map(lambda r: __ugly_hack(r), rules)), dst)
 
 
 def rules_from_json(src: TextIOWrapper) -> list[Rule]:
     """Deserialize rules from a JSON stream"""
-    return list(map(lambda dict: Rule.parse_obj(dict), json.load(src)))
+    return list(map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), json.load(src)))
 
 
 def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
@@ -90,37 +128,10 @@ def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
     fieldnames = list(Rule.schema()["properties"].keys())
     w = csv.DictWriter(dst, fieldnames=fieldnames)
     w.writeheader()
-    for rule in rules:
-        w.writerow(rule.dict())
+    for r in rules:
+        w.writerow(__ugly_hack(r))
+
 
 def rules_from_csv(src: TextIOWrapper) -> list[Rule]:
     """Deserialize rules from a CSV stream"""
-    return list(map(lambda dict: Rule.parse_obj(dict), csv.DictReader(src)))
-
-
-# --- Random data generation
-
-
-def rng_str(len: int) -> str:
-    """Generate random string"""
-    return ''.join(random.choice(string.ascii_letters) for _ in range(len))
-
-
-def rng_enum(it):
-    """Generate enum variant"""
-    return random.choice(list(it))
-
-
-# --- Serialization test
-
-
-rules = list(Rule.random() for _ in range(120))
-buff = StringIO()
-rules_to_json(buff, rules)
-buff = StringIO(buff.getvalue())
-json_as_rules = rules_from_json(buff)
-buff = StringIO()
-rules_to_csv(buff, json_as_rules)
-buff = StringIO(buff.getvalue())
-csv_as_rules = rules_from_csv(buff)
-assert (csv_as_rules == rules)
+    return list(map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), csv.DictReader(src)))

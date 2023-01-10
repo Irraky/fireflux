@@ -1,7 +1,7 @@
 import requests
 from lxml import html
 import xmltodict
-from common import IpVer, Rule, Action, Protocol
+from common import IpVer, Rule, Action, Protocol, NetworkFilter, PortRange
 
 
 def __login(s, url, username, password):
@@ -32,6 +32,10 @@ def __login(s, url, username, password):
         exit("Login was not Successful!")
     return token
 
+def __parse_src_dst(dict): 
+    network = NetworkFilter(inverted="not" in dict, address=dict.get("address"))
+    port = PortRange(range=dict.get("port"))
+    return (network, port)
 
 def __parser(input):
     """Parse firewall rules from pfsense backup XML"""
@@ -58,16 +62,18 @@ def __parser(input):
             "esp": Protocol.ESP,
             "icmp": Protocol.ICMP,
         }
+        [source, source_ports] = __parse_src_dst(filter["source"])
+        [destination, destination_port] = __parse_src_dst(filter["destination"])
         rule = Rule(
             description=filter["descr"],
             action=Action(filter["type"]),
             interface=filter["interface"],
             ip_ver=ipprotocol[filter["ipprotocol"]],
             protocol=protocol[filter.get("protocol", "any")],
-            source="TODO any",
-            source_ports="TODO",
-            destination="TODO any",
-            destination_port="TODO",
+            source=source,
+            source_ports=source_ports,
+            destination=destination,
+            destination_port=destination_port,
         )
         rules.append(rule)
     return rules

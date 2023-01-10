@@ -91,6 +91,41 @@
 	<filter>
 		<rule>
 			<id></id>
+			<tracker>1673343230</tracker>
+			<type>pass</type>
+			<interface>wan</interface>
+			<ipprotocol>inet</ipprotocol>
+			<tag></tag>
+			<tagged></tagged>
+			<max></max>
+			<max-src-nodes></max-src-nodes>
+			<max-src-conn></max-src-conn>
+			<max-src-states></max-src-states>
+			<statetimeout></statetimeout>
+			<statetype><![CDATA[keep state]]></statetype>
+			<os></os>
+			<protocol>tcp</protocol>
+			<source>
+				<address>127.0.0.1</address>
+				<port>110-119</port>
+			</source>
+			<destination>
+				<address>178.3.4.12/22</address>
+				<not></not>
+				<port>53-5060</port>
+			</destination>
+			<descr><![CDATA[Complex source/destination]]></descr>
+			<created>
+				<time>1673343230</time>
+				<username><![CDATA[admin@172.16.143.1 (Local Database)]]></username>
+			</created>
+			<updated>
+				<time>1673343637</time>
+				<username><![CDATA[admin@172.16.143.1 (Local Database)]]></username>
+			</updated>
+		</rule>
+		<rule>
+			<id></id>
 			<tracker>1673342059</tracker>
 			<type>pass</type>
 			<interface>wan</interface>
@@ -754,7 +789,7 @@
 	<gateways>
 	</gateways>
 	<revision>
-		<time>1673342059</time>
+		<time>1673343637</time>
 		<description><![CDATA[admin@172.16.143.1 (Local Database): Firewall: Rules - saved/edited a firewall rule.]]></description>
 		<username><![CDATA[admin@172.16.143.1 (Local Database)]]></username>
 	</revision>
