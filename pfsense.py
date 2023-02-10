@@ -1,7 +1,6 @@
 import requests
 from lxml import html
 import xmltodict
-import dicttoxml
 import ipaddress
 import os
 from common import IpVer, Rule, Action, Protocol, NetworkFilter, PortRange
@@ -85,6 +84,7 @@ __protocolRuleToSense = {v: k for k, v in __protocolSenseToRule.items()}
 
 def __parse_filter(filter) -> Rule:
     """Parse firewall rule from pfSense filter"""
+    print(filter)
     [source, source_ports] = __parse_src_dst(filter["source"])
     [destination, destination_port] = __parse_src_dst(filter["destination"])
     return Rule(
@@ -101,14 +101,20 @@ def __parse_filter(filter) -> Rule:
 
 
 def __parser(input: str) -> list[Rule]:
-    return list(
-        map(__parse_filter, xmltodict.parse(input)["pfsense"]["filter"]["rule"])
-    )
+    rules = xmltodict.parse(input)["pfsense"]["filter"]["rule"]
+    if rules != None:
+        return [__parse_filter(r) for r in rules if r != None]
+    else:
+        return []
 
 
 def __format(rule: Rule):
     """Format firewall rule into pfSense filter"""
-    protocol = f"<protocol>{__protocolRuleToSense[rule.protocol]}</protocol>" if rule.protocol != None else ""
+    protocol = (
+        f"<protocol>{__protocolRuleToSense[rule.protocol]}</protocol>"
+        if rule.protocol != None
+        else ""
+    )
     return f"""
         <rule>
             <type>{rule.action}</type>
@@ -124,9 +130,11 @@ def __format(rule: Rule):
 
 def __formatter(rules: list[Rule]) -> str:
     """Format firewall rules into pfSense backup XML"""
-    xml = "<filter>"
+    xml = '<?xml version="1.0"?><filter>'
     for rule in rules:
         xml += __format(rule)
+    else:
+        xml += "<rule></rule>"
     xml += "</filter>"
     return os.linesep.join([s for s in xml.splitlines() if s.strip()])
 

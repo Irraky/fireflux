@@ -93,7 +93,7 @@ class PortRange(BaseModel):
         if value == "*":
             range = None
         else:
-            range = list(map(lambda nb: int(nb), value.split("-", 1)))
+            range = [int(nb) for nb in value.split("-", 1)]
             if len(range) == 1:
                 range = range[0]
             else:
@@ -139,12 +139,12 @@ def __ugly_hack2(dict):
 
 def rules_to_json(dst: TextIOWrapper, rules: Iterable[Rule]):
     """Serialize rules into a JSON stream"""
-    json.dump(list(map(lambda r: __ugly_hack(r), rules)), dst)
+    json.dump([__ugly_hack(r) for r in rules], dst)
 
 
 def rules_from_json(src: TextIOWrapper) -> list[Rule]:
     """Deserialize rules from a JSON stream"""
-    return list(map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), json.load(src)))
+    return [Rule.parse_obj(__ugly_hack2(dict)) for dict in json.load(src)]
 
 
 def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
@@ -158,6 +158,4 @@ def rules_to_csv(dst: TextIOWrapper, rules: Iterable[Rule]):
 
 def rules_from_csv(src: TextIOWrapper) -> list[Rule]:
     """Deserialize rules from a CSV stream"""
-    return list(
-        map(lambda dict: Rule.parse_obj(__ugly_hack2(dict)), csv.DictReader(src))
-    )
+    return [Rule.parse_obj(__ugly_hack2(dict)) for dict in csv.DictReader(src)]
