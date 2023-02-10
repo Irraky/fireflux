@@ -48,15 +48,19 @@ def pull(src: str) -> List[common.Rule]:
 
 def push(dst: str, rules: List[common.Rule]):
     """Push rules to file or http endpoints"""
-    # TODO handle http endpoints
-    if dst.endswith(".json"):
-        with open(dst, "w") as f:
-            common.rules_to_json(f, rules)
-    elif dst.endswith(".csv"):
-        with open(dst, "w") as f:
-            common.rules_to_csv(f, rules)
+    httpEndpoint = parseHttpEndpoint(dst)
+    if httpEndpoint != None:
+        [url, username, password] = httpEndpoint
+        return pfsense.apply(url, username, password, rules)
     else:
-        sys.exit(f"Unsupported file format ${dst}")
+        if dst.endswith(".json"):
+            with open(dst, "w") as f:
+                common.rules_to_json(f, rules)
+        elif dst.endswith(".csv"):
+            with open(dst, "w") as f:
+                common.rules_to_csv(f, rules)
+        else:
+            sys.exit(f"Unsupported file format ${dst}")
 
 
 def visualize(rules: Iterable[common.Rule]):

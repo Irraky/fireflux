@@ -52,12 +52,12 @@ class NetworkFilter(BaseModel):
     """Network filter"""
 
     inverted: bool
-    network: ipaddress.IPv4Network | ipaddress.IPv6Network | None
+    network: ipaddress.IPv4Network | ipaddress.IPv6Network | str | None
 
     def to_str(self) -> str:
         inverted = "!" if self.inverted else ""
-        address = self.network if self.network != None else "*"
-        return f"{inverted}{address}"
+        network = self.network if self.network != None else "*"
+        return f"{inverted}{network}"
 
     @staticmethod
     def from_str(value):
@@ -68,7 +68,10 @@ class NetworkFilter(BaseModel):
         if value == "*":
             network = None
         else:
-            network = ipaddress.ip_network(value)
+            try:
+                network = ipaddress.ip_network(value)
+            except:
+                network = value
         return NetworkFilter(inverted=inverted, network=network)
 
 
