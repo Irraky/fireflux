@@ -116,7 +116,7 @@ def __login(s, url, username, password):
     """Login for the given session"""
 
     # Get original token
-    r = s.get("%sindex.php" % url, verify=False)
+    r = s.get("%sindex.php" % url, verify=False, timeout=3)
     try:
         token = html.fromstring(r.text).xpath("//input[@name='__csrf_magic']/@value")[0]
     except:
@@ -131,6 +131,7 @@ def __login(s, url, username, password):
             "login": "Login",
         },
         verify=False,
+        timeout=3,
     )
 
     # Get new csrf token
@@ -155,6 +156,7 @@ def extract(url: str, username: str, password: str) -> list[Rule]:
             "donotbackuprrd": "yes",
         },
         verify=False,
+        timeout=3,
     )
     return __parse_rules(r.text)
 
@@ -176,6 +178,7 @@ def apply(url: str, username: str, password: str, rules: list[Rule]):
         },
         files={"conffile": ("backup.xml", xml)},
         verify=False,
+        timeout=3,
     )
 
     if "The configuration area has been restored" not in r.text:
