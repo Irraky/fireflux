@@ -25,6 +25,11 @@ __protocolSenseToRule = {
     "esp": Protocol.ESP,
     "icmp": Protocol.ICMP,
 }
+__actionSenseToRule = {
+    "Action.Pass": Action.Pass,
+    "Action.Block": Action.Block,
+    "Action.Reject": Action.Reject,
+}
 __ipRuleToSense = {v: k for k, v in __ipSenseToRule.items()}
 __protocolRuleToSense = {v: k for k, v in __protocolSenseToRule.items()}
 
@@ -45,7 +50,7 @@ def __parse_rule(xml: dict) -> Rule:
     [destination, destination_port] = __parse_network_filter(xml["destination"])
     return Rule(
         description=xml["descr"],
-        action=Action(xml["type"]),
+        action=__actionSenseToRule[xml["type"]],
         interface=xml["interface"],
         ip_ver=__ipSenseToRule[xml["ipprotocol"]],
         protocol=__protocolSenseToRule[xml.get("protocol", "any")],
@@ -116,7 +121,7 @@ def __login(s, url, username, password):
     """Login for the given session"""
 
     # Get original token
-    r = s.get("%sindex.php" % url, verify=False, timeout=3)
+    r = s.get("%sindex.php" % url, verify=False, timeout=5)
     try:
         token = html.fromstring(r.text).xpath("//input[@name='__csrf_magic']/@value")[0]
     except:
@@ -131,7 +136,7 @@ def __login(s, url, username, password):
             "login": "Login",
         },
         verify=False,
-        timeout=3,
+        timeout=5,
     )
 
     # Get new csrf token
@@ -156,7 +161,7 @@ def extract(url: str, username: str, password: str) -> list[Rule]:
             "donotbackuprrd": "yes",
         },
         verify=False,
-        timeout=3,
+        timeout=5,
     )
     return __parse_rules(r.text)
 
@@ -178,7 +183,7 @@ def apply(url: str, username: str, password: str, rules: list[Rule]):
         },
         files={"conffile": ("backup.xml", xml)},
         verify=False,
-        timeout=3,
+        timeout=5,
     )
 
     if "The configuration area has been restored" not in r.text:
