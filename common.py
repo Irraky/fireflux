@@ -90,7 +90,7 @@ class PortRange(BaseModel):
 
     @staticmethod
     def from_str(value):
-        if value == "*":
+        if value == "*" or value == "":
             range = None
         else:
             range = [int(nb) for nb in value.split("-", 1)]

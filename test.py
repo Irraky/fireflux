@@ -9,7 +9,8 @@ runner = CliRunner()
 def call(args):
     result = runner.invoke(cli, args)
     if result.exit_code != 0:
-        exit(f"FAILURE: python3 cli.py {' '.join(args)}")
+        print(f"FAILURE: python3 cli.py {' '.join(args)}")
+        exit(result.output)
 
 
 def filecmp(a, b):
@@ -43,7 +44,11 @@ def routine(rule: str, endpoint: str):
         filecmp(rule, out_csv)
     pass
 
-
-endpoint = "http://admin:pfsense@10.37.129.2"
-routine("resources/full.csv", endpoint)
+print("## PFsense")
+endpoint = "pfsense+http://YWRtaW46cGZzZW5zZQ==@10.37.129.2"
 routine("resources/empty.csv", endpoint)
+routine("resources/full.csv", endpoint)
+print("## OPNsense")
+endpoint = "opnsense+http://bzVUREM1bHZEenVJMzNCT09Yb1p2bitGbUJPR3JqVmdPbitQaXQ3SnpySzdVcDlTU0c5eDVDMXUyYnVQOE5aZ0RNc213NXo5SlkyN2hRZys6TFk3WnZMMWVBejFVelFaNU9oSStxRkRxM3VlU1hyMmhZRXJDQUM1SHFSR2ZoMTR2VWlnVWFRTVFUMEpVRXplWi9VYUpITWdoRFlna3hzTnU=@192.168.64.17"
+routine("resources/empty.csv", endpoint)
+routine("resources/full.csv", endpoint)

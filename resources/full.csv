@@ -1,19 +1,18 @@
 description,action,interface,ip_ver,protocol,source,source_ports,destination,destination_port
-Complex source/destination,pass,wan,IPv4,TCP,127.0.0.42/32,110-119,!178.3.4.0/22,53-5060
-PFSYNC,pass,wan,IPv4,PFSYNC,*,*,*,*
-CARP,pass,wan,IPv4,CARP,*,*,*,*
-SCTP,pass,wan,IPv4,SCTP,*,*,*,*
-OSPF,pass,wan,IPv4,OSPF,*,*,*,*
-PIM,pass,wan,IPv4,PIM,*,*,*,*
-IGMP,pass,wan,IPv4,IGMP,*,*,*,*
-IPV6,pass,wan,IPv4,IPV6,*,*,*,*
-EoIP,pass,wan,IPv4,ETHERIP,*,*,*,*
-GRE,pass,wan,IPv4,GRE,*,*,*,*
-AH,pass,wan,IPv4,AH,*,*,*,*
-ESP,pass,wan,IPv4,ESP,*,*,*,*
-Simple UDP,block,wan,IPv6,UDP,*,*,*,*
-Simple TCP,pass,wan,IPv4,TCP,*,*,*,*
-Simple ANY,pass,wan,IPv4,,*,*,*,*
-Simple Both,reject,wan,IPv4+IPv6,TCP/UDP,*,*,*,53
+Complex source and destination,pass,lan,IPv4,TCP,127.0.0.42/32,110-119,!178.3.4.0/22,53-5060
+PFSYNC,pass,lan,IPv4,PFSYNC,*,*,*,*
+CARP,pass,lan,IPv4,CARP,*,*,*,*
+SCTP,pass,lan,IPv4,SCTP,*,*,*,*
+OSPF,pass,lan,IPv4,OSPF,*,*,*,*
+PIM,pass,lan,IPv4,PIM,*,*,*,*
+IGMP,pass,lan,IPv4,IGMP,*,*,*,*
+IPV6,pass,lan,IPv4,IPV6,*,*,*,*
+EoIP,pass,lan,IPv4,ETHERIP,*,*,*,*
+GRE,pass,lan,IPv4,GRE,*,*,*,*
+AH,pass,lan,IPv4,AH,*,*,*,*
+ESP,pass,lan,IPv4,ESP,*,*,*,*
+Simple UDP,block,lan,IPv6,UDP,*,*,*,*
+Simple TCP,pass,lan,IPv4,TCP,*,*,*,*
+Simple ANY,pass,lan,IPv4,,*,*,*,*
 Default allow LAN to any rule,pass,lan,IPv4,,lan,*,*,*
 Default allow LAN IPv6 to any rule,pass,lan,IPv6,,lan,*,*,*
