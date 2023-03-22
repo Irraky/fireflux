@@ -84,3 +84,5 @@ python3 test.py
 - Excel format
 - Better error handling
 - Automatic backup ?
+- Translate between interface of multiple firewall
+- Apply for OPNsense

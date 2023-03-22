@@ -52,7 +52,7 @@ def __parse_rule(rule: dict) -> Rule:
     return Rule(
         description=rule["description"],
         action=Action(__parse_selected(rule["action"])),
-        interface=__parse_selected(rule["interface"]),
+        interface="*", #__parse_selected(rule["interface"]) TODO support non floating rule
         ip_ver=__ipSenseToRule[__parse_selected(rule["ipprotocol"])],
         protocol=__protocolSenseToRule[__parse_selected(rule["protocol"]).lower()],
         source=source,
@@ -88,7 +88,7 @@ def __fmt_rule(rule: Rule) -> dict:
         {
             "description": rule.description,
             "action": rule.action,
-            "interface": rule.interface,
+            #"interface": rule.interface,
             "ipprotocol": __ipRuleToSense[rule.ip_ver],
             "protocol": __protocolRuleToSense[rule.protocol].upper()
             if rule.protocol != None

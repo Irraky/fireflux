@@ -118,7 +118,7 @@ class Rule(BaseModel):
 
     description: str | None
     action: Action
-    interface: str  # TODO interface type
+    interface: str  # TODO support non floating rules
     ip_ver: IpVer
     protocol: Protocol | None
     source: NetworkFilter

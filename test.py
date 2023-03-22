@@ -112,7 +112,7 @@ OPN_SENSE = Firewall(
 
 
 for fw in [PF_SENSE, OPN_SENSE]:
-    print(f"## {fw.name}")
+    print(f"## {fw.name} - {fw.auth_url()}")
     auth(fw)
     for rules in ["resources/empty.csv", "resources/full.csv"]:
         routine(rules, fw)
