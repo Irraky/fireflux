@@ -121,14 +121,14 @@ def __login(s, url, username, password):
     """Login for the given session"""
 
     # Get original token
-    r = s.get("%sindex.php" % url, verify=False, timeout=7)
+    r = s.get(f"{url}index.php", verify=False, timeout=7)
     try:
         token = html.fromstring(r.text).xpath("//input[@name='__csrf_magic']/@value")[0]
     except:
         token = ""
     # Login into Firewall Webinterface
     r = s.post(
-        "%sindex.php" % url,
+        f"{url}index.php",
         data={
             "__csrf_magic": token,
             "usernamefld": username,
@@ -147,12 +147,12 @@ def __login(s, url, username, password):
     return token
 
 
-def extract(url: str, username: str, password: str) -> list[Rule]:
+def pull(url: str, username: str, password: str) -> list[Rule]:
     """Extract firewall rules from pfsense service"""
     s = requests.session()
     token = __login(s, url, username, password)
     r = s.post(
-        "%sdiag_backup.php" % url,
+        f"{url}diag_backup.php",
         data={
             "__csrf_magic": token,
             "download": "Download configuration as XML",
@@ -166,7 +166,7 @@ def extract(url: str, username: str, password: str) -> list[Rule]:
     return __parse_rules(r.text)
 
 
-def apply(url: str, username: str, password: str, rules: list[Rule]):
+def push(url: str, username: str, password: str, rules: list[Rule]):
     """Apply firewall rules to pfsense service"""
     xml = __fmt_rules(rules)
 
@@ -174,7 +174,7 @@ def apply(url: str, username: str, password: str, rules: list[Rule]):
     token = __login(s, url, username, password)
 
     r = s.post(
-        "%sdiag_backup.php" % url,
+        f"{url}diag_backup.php",
         data={
             "__csrf_magic": token,
             "restore": "Restore configuration as XML",

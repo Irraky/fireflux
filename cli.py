@@ -5,6 +5,7 @@ import click
 import pfsense
 import opnsense
 import common
+import getpass
 
 from urllib.parse import urlparse
 
@@ -25,6 +26,7 @@ def cli(export, src, dst):
 
     else:
         push(dst, rules)
+        print(f"Pushed {len(rules)} rules")
 
 
 def parseHttpEndpoint(str: str) -> tuple[str, str, str, str] | None:
@@ -32,9 +34,24 @@ def parseHttpEndpoint(str: str) -> tuple[str, str, str, str] | None:
     url = urlparse(str)
     if not url.netloc:
         return None
-    [auth, host] = url.netloc.split("@", 1)
-    decoded = b64decode(auth).decode()
-    [user, pswd] = decoded.split(":", 1)
+    if not "+" in url.scheme:
+        exit(
+            f"Incomplete scheme got '{url.scheme}' expect 'FIREWALL_NAME+HTTP_SCHEME' like 'pfsense+http'"
+        )
+    if "@" in url.netloc:
+        [auth, host] = url.netloc.split("@", 1)
+        try:
+            decoded = b64decode(auth).decode()
+            [user, pswd] = decoded.split(":", 1)
+        except:
+            exit(
+                f"Malformed auth token '{auth}' expected RFC7617 Basic HTTP Authentication Scheme"
+            )
+    else:
+        host = url.netloc
+        print(f"Auth for {str}")
+        user = input("Username: ")
+        pswd = getpass.getpass("Password: ")
     [scheme, http] = url.scheme.split("+", 1)
     return (f"{http}://{host}/", scheme, user, pswd)
 
@@ -45,9 +62,9 @@ def pull(src: str) -> list[common.Rule]:
     if httpEndpoint is not None:
         [url, scheme, username, password] = httpEndpoint
         if scheme == "opnsense":
-            return opnsense.extract(url, username, password)
+            return opnsense.pull(url, username, password)
         elif scheme == "pfsense":
-            return pfsense.extract(url, username, password)
+            return pfsense.pull(url, username, password)
         else:
             exit(f"Unknown firewall scheme '{scheme}' support opnsense and pfsense")
     else:
@@ -67,9 +84,9 @@ def push(dst: str, rules: list[common.Rule]):
     if httpEndpoint is not None:
         [url, scheme, username, password] = httpEndpoint
         if scheme == "opnsense":
-            return opnsense.apply(url, username, password, rules)
+            return opnsense.push(url, username, password, rules)
         elif scheme == "pfsense":
-            return pfsense.apply(url, username, password, rules)
+            return pfsense.push(url, username, password, rules)
         else:
             exit(f"Unknown firewall scheme '{scheme}' support opnsense and pfsense")
     else:
