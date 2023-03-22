@@ -10,13 +10,19 @@ from urllib.parse import urlparse
 
 
 @click.command()
+@click.option("--export", "-e", is_flag=True, help="Export rules from backup file to Excel sheet")
 @click.argument("src")
 @click.argument("dst", required=False)
-def cli(src, dst):
+def cli(export, src, dst):
     """Cross platform firewall rules tool"""
     rules = pull(src)
-    if dst is None:
+
+    if export:
+        export_to_excel(rules)
+
+    elif dst is None:
         visualize(rules)
+
     else:
         push(dst, rules)
 
@@ -36,7 +42,7 @@ def parseHttpEndpoint(str: str) -> tuple[str, str, str, str] | None:
 def pull(src: str) -> list[common.Rule]:
     """Pull rules from file or http endpoints"""
     httpEndpoint = parseHttpEndpoint(src)
-    if httpEndpoint != None:
+    if httpEndpoint is not None:
         [url, scheme, username, password] = httpEndpoint
         if scheme == "opnsense":
             return opnsense.extract(url, username, password)
@@ -58,7 +64,7 @@ def pull(src: str) -> list[common.Rule]:
 def push(dst: str, rules: list[common.Rule]):
     """Push rules to file or http endpoints"""
     httpEndpoint = parseHttpEndpoint(dst)
-    if httpEndpoint != None:
+    if httpEndpoint is not None:
         [url, scheme, username, password] = httpEndpoint
         if scheme == "opnsense":
             return opnsense.apply(url, username, password, rules)
@@ -79,8 +85,12 @@ def push(dst: str, rules: list[common.Rule]):
 
 def visualize(rules: Iterable[common.Rule]):
     """Visualize firewall rules using a flow matrix"""
-    # TODO visualization
-    print(rules)
+    common.rules_to_excel(common.get_dict(rules))
+    common.visualize()
+
+
+def export_to_excel(rules: Iterable[common.Rule]):
+    common.rules_to_excel(common.get_dict(rules))
 
 
 if __name__ == "__main__":
