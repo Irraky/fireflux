@@ -27,8 +27,8 @@ and credentials. All those informations can be merge into a single URL:
 `FIREWALL_NAME+HTTP_SCHEME://AUTH_TOKEN@0.0.0.0`
 
 When auth credential are stored inside the URL they are formatted following
-[RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(Basic HTTP
-Authentication Scheme). If absent, auth credential are taken using a prompt.
+[RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(Basic HTTP Authentication
+Scheme). If absent, auth credential are taken using a prompt.
 
 ## Usage example
 
@@ -66,6 +66,16 @@ fireflux pfsense+http://YWRtaW46cGZzZW5zZQ==@10.37.129.2
 
 ```
 fireflux rules.csv
+```
+
+## Development
+
+### Run tests
+
+You might have to change firewall data inside `test.py`
+
+```
+python3 test.py
 ```
 
 ## TODO
