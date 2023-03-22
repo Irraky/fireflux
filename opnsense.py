@@ -27,6 +27,7 @@ __protocolSenseToRule = {
 __ipRuleToSense = {v: k for k, v in __ipSenseToRule.items()}
 __protocolRuleToSense = {v: k for k, v in __protocolSenseToRule.items()}
 
+
 def __parse_selected(enum: dict) -> str:
     """Parse selection option from OPNsense JSON"""
     return next(k for k, v in enum.items() if v["selected"])
@@ -98,10 +99,10 @@ def __fmt_rule(rule: Rule) -> dict:
     )
 
 
-def extract(url: str, key: str, secret: str) -> list[Rule]:
+def pull(url: str, key: str, secret: str) -> list[Rule]:
     """Extract firewall rules from OPNsense service"""
     r = requests.get(
-        "%sapi/firewall/filter/get" % url,
+        f"{url}api/firewall/filter/get",
         auth=(key, secret),
         verify=False,
         timeout=5,
@@ -110,11 +111,11 @@ def extract(url: str, key: str, secret: str) -> list[Rule]:
     return __parse_rules(r.text)
 
 
-def apply(url: str, key: str, secret: str, rules: list[Rule]):
+def push(url: str, key: str, secret: str, rules: list[Rule]):
     """Apply firewall rules to OPNsense service"""
     # List old rules
     r = requests.post(
-        "%sapi/firewall/filter/searchRule" % url,
+        f"{url}api/firewall/filter/searchRule",
         auth=(key, secret),
         verify=False,
         timeout=5,
@@ -125,7 +126,7 @@ def apply(url: str, key: str, secret: str, rules: list[Rule]):
     for r in rules:
         data = {"rule": __fmt_rule(r)}
         r = requests.post(
-            "%sapi/firewall/filter/addRule" % url,
+            f"{url}api/firewall/filter/addRule",
             auth=(key, secret),
             verify=False,
             headers={"Content-type": "application/json"},

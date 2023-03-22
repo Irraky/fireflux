@@ -27,7 +27,7 @@ and credentials. All those informations can be merge into a single URL:
 `FIREWALL_NAME+HTTP_SCHEME://AUTH_TOKEN@0.0.0.0`
 
 When auth credential are stored inside the URL they are formatted following
-[RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(The 'Basic' HTTP
+[RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(Basic HTTP
 Authentication Scheme). If absent, auth credential are taken using a prompt.
 
 ## Usage example
@@ -71,7 +71,6 @@ fireflux rules.csv
 ## TODO
 
 - Can we detect the type of firewall elegantly from its url?
-- Can we enter the password more securely? - support auth prompt
 - Excel format
 - Better error handling
 - Automatic backup ?
