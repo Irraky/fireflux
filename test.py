@@ -1,16 +1,42 @@
 from click.testing import CliRunner
 from cli import cli
+from base64 import b64encode
 import tempfile
 import os
 
+
+class Firewall:
+    user: str
+    pswd: str
+    name: str
+    scheme: str
+    ip: str
+
+    def __init__(self, name: str, scheme: str, ip: str, user: str, pswd: str):
+        self.name = name
+        self.scheme = scheme
+        self.ip = ip
+        self.user = user
+        self.pswd = pswd
+
+    def auth_url(self) -> str:
+        auth = b64encode(f"{self.user}:{self.pswd}".encode()).decode()
+        return f"{self.name}+{self.scheme}://{auth}@{self.ip}"
+    
+    def url(self) -> str:
+        return f"{self.name}+{self.scheme}://{self.ip}"
+
+
 runner = CliRunner()
 
+def raw_call(args, input = None):
+    return runner.invoke(cli, args, input)
 
-def call(args):
-    result = runner.invoke(cli, args)
+def call(args, input = None):
+    result = raw_call(args, input)
     if result.exit_code != 0:
         print(f"FAILURE: python3 cli.py {' '.join(args)}")
-        exit(result.output)
+        exit(f"{result}")
 
 
 def filecmp(a, b):
@@ -21,34 +47,74 @@ def filecmp(a, b):
             assert a == b
 
 
-def routine(rule: str, endpoint: str):
-    print(f"Test: {rule}")
+def routine(rules: str, fw: Firewall):
+    print(f"# {rules}")
+    url = fw.auth_url()
     with tempfile.TemporaryDirectory() as dir:
         out_csv = os.path.join(dir, "out.csv")
         out_json = os.path.join(dir, "out.json")
-        print("rule > endpoint")
-        call([rule, endpoint])
-        print("endpoint > json")
-        call([endpoint, out_json])
-        print("json > endpoint")
-        call([out_json, endpoint])
-        print("endpoint > csv")
-        call([endpoint, out_csv])
+        print("rule > firewall")
+        call([rules, url])
+        print("firewall > json")
+        call([url, out_json])
+        print("json > firewall")
+        call([out_json, url])
+        print("firewall > csv")
+        call([url, out_csv])
         print("rule == csv")
-        filecmp(rule, out_csv)
+        filecmp(rules, out_csv)
         print("csv > json")
         call([out_csv, out_json])
         print("json > csv")
         call([out_json, out_csv])
         print("rule == csv")
-        filecmp(rule, out_csv)
-    pass
+        filecmp(rules, out_csv)
 
-print("## PFsense")
-endpoint = "pfsense+http://YWRtaW46cGZzZW5zZQ==@10.37.129.2"
-routine("resources/empty.csv", endpoint)
-routine("resources/full.csv", endpoint)
-print("## OPNsense")
-endpoint = "opnsense+http://bzVUREM1bHZEenVJMzNCT09Yb1p2bitGbUJPR3JqVmdPbitQaXQ3SnpySzdVcDlTU0c5eDVDMXUyYnVQOE5aZ0RNc213NXo5SlkyN2hRZys6TFk3WnZMMWVBejFVelFaNU9oSStxRkRxM3VlU1hyMmhZRXJDQUM1SHFSR2ZoMTR2VWlnVWFRTVFUMEpVRXplWi9VYUpITWdoRFlna3hzTnU=@192.168.64.17"
-routine("resources/empty.csv", endpoint)
-routine("resources/full.csv", endpoint)
+def auth(fw: Firewall):
+    print("# auth")
+    call([fw.url()], f"{fw.user}\n{fw.pswd}\n")
+
+def err(fw: Firewall):
+    print("# err")
+
+    r = raw_call(["img.jpg"])
+    assert r.exit_code == 1
+    assert r.output == f"Unsupported file format 'img.jpg'\n", r.output
+
+    r = raw_call([fw.auth_url(), "img.png"])
+    assert r.exit_code == 1
+    assert r.output == f"Unsupported file format 'img.png'\n", r.output
+
+    r = raw_call([f"unknown+{fw.scheme}://{fw.ip}"])
+    assert r.exit_code == 1
+    assert r.output == f"Unknown firewall scheme 'unknown' support opnsense and pfsense\n", r.output
+
+    r = raw_call([fw.auth_url(), f"unknown+{fw.scheme}://{fw.ip}"])
+    assert r.exit_code == 1
+    assert r.output == f"Unknown firewall scheme 'unknown' support opnsense and pfsense\n", r.output
+
+    r = raw_call([f"{fw.name}://{fw.ip}"])
+    assert r.exit_code == 1
+    assert r.output == f"Incomplete scheme got '{fw.name}' expect 'FIREWALL_NAME+HTTP_SCHEME' like 'pfsense+http'\n", r.output
+
+    r = raw_call([f"{fw.name}+{fw.scheme}://12345@{fw.ip}"])
+    assert r.exit_code == 1
+    assert r.output == f"Malformed auth token '12345' expected RFC7617 Basic HTTP Authentication Scheme\n", r.output
+
+PF_SENSE = Firewall("pfsense", "http", "10.37.129.2", "admin", "pfsense")
+OPN_SENSE = Firewall(
+    "opnsense",
+    "http",
+    "192.168.64.17",
+    "o5TDC5lvDzuI33BOOXoZvn+FmBOGrjVgOn+Pit7JzrK7Up9SSG9x5C1u2buP8NZgDMsmw5z9JY27hQg+",
+    "LY7ZvL1eAz1UzQZ5OhI+qFDq3ueSXr2hYErCAC5HqRGfh14vUigUaQMQT0JUEzeZ/UaJHMghDYgkxsNu",
+)
+
+
+for fw in [PF_SENSE, OPN_SENSE]:
+    print(f"## {fw.name}")
+    auth(fw)
+    for rules in ["resources/empty.csv", "resources/full.csv"]:
+        routine(rules, fw)
+    err(fw)
+    print()

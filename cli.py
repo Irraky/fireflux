@@ -43,9 +43,13 @@ def parseHttpEndpoint(str: str) -> tuple[str, str, str, str] | None:
             )
     else:
         host = url.netloc
-        print(f"Auth for {str}")
-        user = input("Username: ")
-        pswd = getpass.getpass("Password: ")
+        if sys.stdin.isatty():
+            print(f"Auth for {str}")
+            user = input("Username: ")
+            pswd = getpass.getpass("Password: ")
+        else:
+            user = sys.stdin.readline().rstrip()
+            pswd = sys.stdin.readline().rstrip()
     [scheme, http] = url.scheme.split("+", 1)
     return (f"{http}://{host}/", scheme, user, pswd)
 
@@ -69,7 +73,7 @@ def pull(src: str) -> list[common.Rule]:
             with open(src, "r") as f:
                 return common.rules_from_csv(f)
         else:
-            sys.exit(f"Unsupported file format ${src}")
+            exit(f"Unsupported file format '{src}'")
 
 
 def push(dst: str, rules: list[common.Rule]):
@@ -91,7 +95,7 @@ def push(dst: str, rules: list[common.Rule]):
             with open(dst, "w") as f:
                 common.rules_to_csv(f, rules)
         else:
-            sys.exit(f"Unsupported file format ${dst}")
+            sys.exit(f"Unsupported file format '{dst}'")
 
 
 def visualize(rules: Iterable[common.Rule]):
