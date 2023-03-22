@@ -1,73 +1,77 @@
 # fireflux
 
-Création d'une matrice de flux à partir d'un firewall
+Manage firewall filtering rules from your terminal
 
-## Comment installer ?
+## Get started
 
-- Cloner le repository
+```
+git clone https://github.com/Irraky/fireflux
+python3 -m pip install -r requirements.txt
+python3 cli.py
+```
 
-- Installer les requirements `pip install -r requirements.txt`
+## Usage
 
-- Lancer le programme `python ./main.py`
-
-## Comprendre le Code
-
-- Lire le main.py
-
-- Comprendre les objets et leurs fonctions
-
-- Si vous êtes cons allez regarder le schéma sur Discord
-
-# Fireflux CLI design
-
-## Endpoints
-
-Endpoints can be either HTTP or file paths
-
-### HTTP endpoints
-
-When we want to interact with firewall servers, we use a URL. The username and
-password can be included in the access point URL encoded using the HTTP Basic Auth format. We could add a more secure way
-to enter the password by using a secure prompt.
-
-`pfsense+http://YWRtaW46cGZzZW5zZQ@10.37.129.2`
+Fireflux manipulate firewall filtering rules between on or two endpoints. These
+endpoints can be files or firewall server.
 
 ### File endpoints
 
-When we want to interact with local files, we use regular file system paths,
-with the file type taken from the path.
+The following format are supported: `*.csv` and `*.json`.
 
-`rules.csv` or `rules.json`
+### Firewall endpoint
 
-## Supported features
+We support `pfsense` and `opnsense`. To interact with need an ip, a http scheme
+and credentials. All those informations can be merge into a single URL:
 
-- Pull rules: `fireflux SENSE+http://TOKEN@0.0.0.0/ rules.json`
-- Push rules: `fireflux rules.json SENSE+http://TOKEN@0.0.0.0/`
-- Copy rules:
-  `fireflux SENSE+http://TOKEN@0.0.0.0/ SENSE+http://TOKEN@0.0.0.1/`
-- Translate rules files: `fireflux rules.json rules.csv`
-- Visualize rules from server: `fireflux SENSE+http://TOKEN@0.0.0.0/`
-- Visualize rules from file: `fireflux rules.csv`
+`FIREWALL_NAME+HTTP_SCHEME://AUTH_TOKEN@0.0.0.0`
 
-## Current help message
+When auth credential are stored inside the URL they are formatted following
+[RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(The 'Basic' HTTP
+Authentication Scheme). If absent, auth credential are taken using a prompt.
+
+## Usage example
+
+- Pull rules from a PFsense firewall into a JSON file
 
 ```
-Usage: cli.py [OPTIONS] SRC [DST]
-
-  Cross platform firewall rules tool
-
-Options:
-  --help  Show this message and exit.
+fireflux pfsense+http://YWRtaW46cGZzZW5zZQ==@10.37.129.2 rules.json
 ```
 
-## Open questions
+- Push rules from a CSV file into an OPNsense firewall
+
+```
+fireflux rules.csv opnsense+http://192.168.64.17
+```
+
+- Copy rules from a PFsense firewall into an OPNsense firewall
+
+```
+fireflux SENSE+http://TOKEN@0.0.0.0/ SENSE+http://TOKEN@0.0.0.1/
+```
+
+- Translate rules stored in a JSON file into a CSV file
+
+```
+fireflux rules.json rules.csv
+```
+
+- Visualize rules from a PFsense server:
+
+```
+fireflux pfsense+http://YWRtaW46cGZzZW5zZQ==@10.37.129.2
+```
+
+- Visualize rules from csv file:
+
+```
+fireflux rules.csv
+```
+
+## TODO
 
 - Can we detect the type of firewall elegantly from its url?
-- Can we enter the password more securely?
-
-## TODO 
-
+- Can we enter the password more securely? - support auth prompt
 - Excel format
-- Auth prompt
 - Better error handling
 - Automatic backup ?
