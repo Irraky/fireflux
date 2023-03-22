@@ -121,7 +121,7 @@ def __login(s, url, username, password):
     """Login for the given session"""
 
     # Get original token
-    r = s.get(f"{url}index.php", verify=False, timeout=7)
+    r = s.get(f"{url}index.php", verify=False, timeout=10)
     try:
         token = html.fromstring(r.text).xpath("//input[@name='__csrf_magic']/@value")[0]
     except:
@@ -136,14 +136,14 @@ def __login(s, url, username, password):
             "login": "Login",
         },
         verify=False,
-        timeout=7,
+        timeout=10,
     )
 
     # Get new csrf token
     token = html.fromstring(r.text).xpath("//input[@name='__csrf_magic']/@value")[0]
     if html.fromstring(r.text).xpath("//title/text()")[0].startswith("Login"):
         # TODO how to handle error gracefully
-        exit("Login was not Successful!")
+        exit("Failed to login to {url}")
     return token
 
 
