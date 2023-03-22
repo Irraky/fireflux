@@ -260,7 +260,8 @@ def get_dict(rules: Iterable[Rule]):
     return rules_dict
 
 
-def rules_to_excel(rules_dict: dict):
+def rules_to_excel(path: str, rules: list[Rule]):
+    rules_dict = get_dict(rules)
     sources = []
     destinations = []
     for key in rules_dict.keys():
@@ -291,14 +292,13 @@ def rules_to_excel(rules_dict: dict):
 
     data_frame = pd.DataFrame(flow_matrix)
 
-    writer = pd.ExcelWriter("./resources/output.xlsx")
+    writer = pd.ExcelWriter(path)
     data_frame.to_excel(
         writer, sheet_name="Flow matrix", header=False, index=False, na_rep=""
     )
     writer.close()
 
-    input = "./resources/output.xlsx"
-    workbook = openpyxl.load_workbook(input)
+    workbook = openpyxl.load_workbook(path)
     worksheet = workbook.active
 
     auto_adjust_cell_width(worksheet)
@@ -309,10 +309,8 @@ def rules_to_excel(rules_dict: dict):
     workbook.save(output)
 
 
-def visualize(espace=2):
-    df = pd.read_excel(
-        "./resources/output.xlsx", sheet_name="Flow matrix", engine="openpyxl"
-    )
+def visualize(path, espace=2):
+    df = pd.read_excel(path, sheet_name="Flow matrix", engine="openpyxl")
     df.fillna("", inplace=True)
 
     headers = df.columns

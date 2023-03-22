@@ -1,5 +1,7 @@
 from base64 import b64decode
+import os
 import sys
+import tempfile
 from typing import Iterable
 import click
 import pfsense
@@ -11,19 +13,14 @@ from urllib.parse import urlparse
 
 
 @click.command()
-@click.option("--export", "-e", is_flag=True, help="Export rules from backup file to Excel sheet")
 @click.argument("src")
 @click.argument("dst", required=False)
-def cli(export, src, dst):
+def cli(src, dst):
     """Cross platform firewall rules tool"""
     rules = pull(src)
 
-    if export:
-        export_to_excel(rules)
-
-    elif dst is None:
+    if dst is None:
         visualize(rules)
-
     else:
         push(dst, rules)
         print(f"Pushed {len(rules)} rules")
@@ -100,18 +97,19 @@ def push(dst: str, rules: list[common.Rule]):
         elif dst.endswith(".csv"):
             with open(dst, "w") as f:
                 common.rules_to_csv(f, rules)
+        elif dst.endswith(".xlsx"):
+            common.rules_to_excel(dst, rules)
         else:
             sys.exit(f"Unsupported file format '{dst}'")
 
 
-def visualize(rules: Iterable[common.Rule]):
+def visualize(rules: list[common.Rule]):
     """Visualize firewall rules using a flow matrix"""
-    common.rules_to_excel(common.get_dict(rules))
-    common.visualize()
+    with tempfile.TemporaryDirectory() as dir:
+        path = os.path.join(dir, "out.xlsx")
+        common.rules_to_excel(path, rules)
+        common.visualize(path)
 
-
-def export_to_excel(rules: Iterable[common.Rule]):
-    common.rules_to_excel(common.get_dict(rules))
 
 
 if __name__ == "__main__":
