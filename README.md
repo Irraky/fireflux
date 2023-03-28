@@ -26,6 +26,8 @@ and credentials. All those informations can be merge into a single URL:
 
 `FIREWALL_NAME+HTTP_SCHEME://AUTH_TOKEN@0.0.0.0`
 
+The AUTH_TOKEN is the `username:password` encoded in base64.
+
 When auth credential are stored inside the URL they are formatted following
 [RFC7617](https://www.rfc-editor.org/rfc/rfc7617)(Basic HTTP Authentication
 Scheme). If absent, auth credential are taken using a prompt.
