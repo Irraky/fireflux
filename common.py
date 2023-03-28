@@ -158,11 +158,26 @@ class Rule(BaseModel):
 # --- Rules serialization
 
 
+def protocol_to_str(protocol: Protocol | None) -> str:
+    if protocol is None:
+        return "*"
+    else:
+        return protocol
+
+
+def protocol_from_str(value) -> Protocol | None:
+    if value == "*" or value == "":
+        return None
+    else:
+        return Protocol(value)
+
+
 def __ugly_hack(dict):
     dict.source = dict.source.to_str()
     dict.destination = dict.destination.to_str()
     dict.source_ports = dict.source_ports.to_str()
     dict.destination_port = dict.destination_port.to_str()
+    dict.protocol = protocol_to_str(dict.protocol)
     return dict.dict()
 
 
@@ -171,8 +186,7 @@ def __ugly_hack2(dict):
     dict["destination"] = NetworkFilter.from_str(dict["destination"])
     dict["source_ports"] = PortRange.from_str(dict["source_ports"])
     dict["destination_port"] = PortRange.from_str(dict["destination_port"])
-    if dict["protocol"] == "":
-        dict["protocol"] = None
+    dict["protocol"] = protocol_from_str(dict["protocol"])
     return dict
 
 

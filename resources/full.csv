@@ -12,5 +12,5 @@ GRE,pass,*,IPv4,GRE,*,*,*,*
 AH,pass,*,IPv4,AH,*,*,*,*
 ESP,pass,*,IPv4,ESP,*,*,*,*
 Simple UDP,block,*,IPv6,UDP,*,*,*,*
-Simple TCP,pass,*,IPv4,TCP,*,*,*,*
-Simple ANY,pass,*,IPv4,,*,*,*,*
+Simple TCP,reject,*,IPv4,TCP,*,*,*,*
+Simple ANY,pass,*,IPv4,*,*,*,*,*

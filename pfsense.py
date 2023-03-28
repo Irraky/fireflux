@@ -29,6 +29,9 @@ __actionSenseToRule = {
     "Action.Pass": Action.Pass,
     "Action.Block": Action.Block,
     "Action.Reject": Action.Reject,
+    "pass": Action.Pass,
+    "block": Action.Block,
+    "reject": Action.Reject,
 }
 __ipRuleToSense = {v: k for k, v in __ipSenseToRule.items()}
 __protocolRuleToSense = {v: k for k, v in __protocolSenseToRule.items()}
@@ -51,7 +54,7 @@ def __parse_rule(xml: dict) -> Rule:
     return Rule(
         description=xml["descr"],
         action=__actionSenseToRule[xml["type"]],
-        interface="*", # xml["interface"] TODO support non floating rule
+        interface="*",  # xml["interface"] TODO support non floating rule
         ip_ver=__ipSenseToRule[xml["ipprotocol"]],
         protocol=__protocolSenseToRule[xml.get("protocol", "any")],
         source=source,
