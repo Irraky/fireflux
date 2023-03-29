@@ -5,6 +5,7 @@ import ipaddress
 import os
 from common import IpVer, Rule, Action, Protocol, NetworkFilter, PortRange
 
+requests.adapters.DEFAULT_RETRIES = 5
 
 __ipSenseToRule = {"inet46": IpVer.Both, "inet": IpVer.V4, "inet6": IpVer.V6}
 __protocolSenseToRule = {
