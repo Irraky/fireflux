@@ -47,7 +47,7 @@ def filecmp(a, b):
             assert a == b
 
 
-def routine(rules: str, fw: Firewall):
+def firewall_routine(rules: str, fw: Firewall):
     print(f"# {rules}")
     url = fw.auth_url()
     with tempfile.TemporaryDirectory() as dir:
@@ -63,12 +63,19 @@ def routine(rules: str, fw: Firewall):
         call([url, out_csv])
         print("rule == csv")
         filecmp(rules, out_csv)
-        print("csv > json")
-        call([out_csv, out_json])
+
+def file_routine(rules: str):
+    print(f"# {rules}")
+    with tempfile.TemporaryDirectory() as dir:
+        out_csv = os.path.join(dir, "out.csv")
+        out_json = os.path.join(dir, "out.json")
+        print("rule > json")
+        call([rules, out_json])
         print("json > csv")
         call([out_json, out_csv])
         print("rule == csv")
         filecmp(rules, out_csv)
+
 
 def auth(fw: Firewall):
     print("# auth")
@@ -111,10 +118,14 @@ OPN_SENSE = Firewall(
 )
 
 
+fixtures = ["resources/empty.csv", "resources/full.csv"]
+for rules in fixtures:
+    file_routine(rules)
+print()
 for fw in [PF_SENSE, OPN_SENSE]:
     print(f"## {fw.name} - {fw.auth_url()}")
     auth(fw)
-    for rules in ["resources/empty.csv", "resources/full.csv"]:
-        routine(rules, fw)
+    for rules in fixtures:
+        firewall_routine(rules, fw)
     err(fw)
     print()
