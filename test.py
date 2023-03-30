@@ -44,6 +44,12 @@ def filecmp(a, b):
         with open(b, "r") as b:
             a = a.read()
             b = b.read()
+            if a != b:
+                with open("/tmp/a.out", "w") as fa:
+                    with open("/tmp/b.out", "w") as fb:
+                        fa.write(a)
+                        fb.write(b)
+                        os.system("code -d /tmp/a.out /tmp/b.out")
             assert a == b
 
 
@@ -118,14 +124,14 @@ OPN_SENSE = Firewall(
 )
 
 
-fixtures = ["resources/empty.csv", "resources/full.csv"]
+fixtures = ["resources/empty.csv", "resources/full.csv", "resources/demo.csv"]
 for rules in fixtures:
     file_routine(rules)
 print()
 for fw in [PF_SENSE, OPN_SENSE]:
     print(f"## {fw.name} - {fw.auth_url()}")
-    auth(fw)
     for rules in fixtures:
         firewall_routine(rules, fw)
+    auth(fw)
     err(fw)
     print()

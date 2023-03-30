@@ -1,7 +1,7 @@
 description,action,interface,ip_ver,protocol,source,source_ports,destination,destination_port
-Bloquer les connexions extérieurs,block,wan,IPv4,*,*,*,!10.0.0.0/24,*
-Serveur HTTP,pass,wan,IPv4,TCP,*,*,10.0.0.34,80
-Serveur HTTPS,pass,wan,IPv4,TCP,*,*,10.0.0.34,443
-Serveur messagerie IMAP,pass,wan,IPv4,TCP,*,*,10.0.0.49,143
-Serveur messagerie IMAPS,pass,wan,IPv4,TCP,*,*,10.0.0.49,993
-Serveur DNS,pass,wan,IPv4,UDP,*,*,10.0.0.23,389
+Bloquer les connexions exterieurs,block,*,IPv4,*,*,*,!10.0.0.0/24,*
+Serveur HTTP,pass,*,IPv4,TCP,*,*,10.0.0.34/32,80
+Serveur HTTPS,pass,*,IPv4,TCP,*,*,10.0.0.34/32,443
+Serveur messagerie IMAP,pass,*,IPv4,TCP,*,*,10.0.0.49/32,143
+Serveur messagerie IMAPS,pass,*,IPv4,TCP,*,*,10.0.0.49/32,993
+Serveur DNS,pass,*,IPv4,UDP,*,*,10.0.0.23/32,389
